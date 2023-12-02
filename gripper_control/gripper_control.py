@@ -31,16 +31,19 @@ class GripperController(Node):
 
         self.gripper = { "Front": None, "Bottom": None }
 
-        # Create digital outputs
-        self.gripper["Front"] = DigitalOutput()
-        self.gripper["Front"].setDeviceSerialNumber(656370)
-        self.gripper["Front"].setChannel(0)
-        self.gripper["Front"].openWaitForAttachment(3000)
+        try:
+            # Create digital outputs
+            self.gripper["Front"] = DigitalOutput()
+            self.gripper["Front"].setDeviceSerialNumber(656370)
+            self.gripper["Front"].setChannel(0)
+            self.gripper["Front"].openWaitForAttachment(3000)
 
-        self.gripper["Bottom"] = DigitalOutput()
-        self.gripper["Bottom"].setDeviceSerialNumber(656370)
-        self.gripper["Bottom"].setChannel(1)
-        self.gripper["Bottom"].openWaitForAttachment(3000)
+            self.gripper["Bottom"] = DigitalOutput()
+            self.gripper["Bottom"].setDeviceSerialNumber(656370)
+            self.gripper["Bottom"].setChannel(1)
+            self.gripper["Bottom"].openWaitForAttachment(3000)
+        except:
+            self.log.warn("Could not connect to Phidgets. Ignore this if grippers are disconnected.")
 
 
     def cam_callback(self, cam_msg):
