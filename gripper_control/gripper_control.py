@@ -55,13 +55,21 @@ class GripperController(Node):
 
 
     def toggle_gripper(self):
+        if self.active_gripper is None:
+            self.log.warn("No currently registered active gripper. Defaulting to Front.")
+            self.active_gripper = "Front"
+
         # Get active gripper
         gripper = self.gripper[self.active_gripper]
 
-        if gripper.getDutyCycle() == 1:
+        if gripper.getDutyCycle():
             gripper.setDutyCycle(0)
-        elif not gripper.getDutyCycle() == 0:
+            self.log.info("{} gripper opened".format(self.active_gripper))
+        elif not gripper.getDutyCycle():
             gripper.setDutyCycle(1)
+            self.log.info("{} gripper closed".format(self.active_gripper))
+        else:
+            self.log.info(str(gripper.getDutyCycle()))
 
 
     def exit_grippers(self):
