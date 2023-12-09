@@ -21,11 +21,6 @@ class GripperController(Node):
         
         self.log = self.get_logger() # Quick reference for logging
 
-        # Create sub for getting the gripper in frame of the camera
-        self.camera_sub = self.create_subscription(Cam, "active_camera", self.cam_callback, 10)
-        # Create subscriber for monitoring joystick button presses
-        self.joy_sub = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
-
         self.active_gripper = None
         self.cached_input = False
 
@@ -44,6 +39,11 @@ class GripperController(Node):
             self.gripper["Bottom"].openWaitForAttachment(3000)
         except:
             self.log.warn("Could not connect to Phidgets. Ignore this if grippers are disconnected.")
+        else:
+            # Create sub for getting the gripper in frame of the camera
+            self.camera_sub = self.create_subscription(Cam, "active_camera", self.cam_callback, 10)
+            # Create subscriber for monitoring joystick button presses
+            self.joy_sub = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
 
     def cam_callback(self, cam_msg):
