@@ -17,29 +17,23 @@ from Phidget22.Devices.DigitalOutput import *
 class GripperController(Node):
 
     def __init__(self):
-        super().__init__('motion_control')
+            super().__init__('motion_control')
         
-        self.log = self.get_logger() # Quick reference for logging
+            self.log = self.get_logger() # Quick reference for logging
 
-        self.active_gripper = None
-        self.cached_input = False
+            self.active_gripper = None
+            self.cached_input = False
 
-        self.gripper = { "Front": None, "Bottom": None }
+            self.gripper = { "Front": None, "Bottom": None }
 
-        try:
             # Create digital outputs
             self.gripper["Front"] = DigitalOutput()
-            self.gripper["Front"].setDeviceSerialNumber(656370)
             self.gripper["Front"].setChannel(0)
             self.gripper["Front"].openWaitForAttachment(3000)
 
             self.gripper["Bottom"] = DigitalOutput()
-            self.gripper["Bottom"].setDeviceSerialNumber(656370)
             self.gripper["Bottom"].setChannel(1)
             self.gripper["Bottom"].openWaitForAttachment(3000)
-        except:
-            self.log.warn("Could not connect to Phidgets. Ignore this if grippers are disconnected.")
-        else:
             # Create sub for getting the gripper in frame of the camera
             self.camera_sub = self.create_subscription(Cam, "active_camera", self.cam_callback, 10)
             # Create subscriber for monitoring joystick button presses
