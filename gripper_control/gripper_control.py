@@ -26,18 +26,22 @@ class GripperController(Node):
 
             self.gripper = { "Front": None, "Bottom": None }
 
-            # Create digital outputs
-            self.gripper["Front"] = DigitalOutput()
-            self.gripper["Front"].setChannel(0)
-            self.gripper["Front"].openWaitForAttachment(3000)
+            try:
+                # Create digital outputs
+                self.gripper["Front"] = DigitalOutput()
+                self.gripper["Front"].setChannel(0)
+                self.gripper["Front"].openWaitForAttachment(3000)
 
-            self.gripper["Bottom"] = DigitalOutput()
-            self.gripper["Bottom"].setChannel(1)
-            self.gripper["Bottom"].openWaitForAttachment(3000)
-            # Create sub for getting the gripper in frame of the camera
-            self.camera_sub = self.create_subscription(Cam, "active_camera", self.cam_callback, 10)
-            # Create subscriber for monitoring joystick button presses
-            self.joy_sub = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
+                self.gripper["Bottom"] = DigitalOutput()
+                self.gripper["Bottom"].setChannel(1)
+                self.gripper["Bottom"].openWaitForAttachment(3000)
+            except:
+                self.log.warn("Could not connect to grippers. Ignore this if Phidget is unplugged")
+            else:
+                # Create sub for getting the gripper in frame of the camera
+                self.camera_sub = self.create_subscription(Cam, "active_camera", self.cam_callback, 10)
+                # Create subscriber for monitoring joystick button presses
+                self.joy_sub = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
 
     def cam_callback(self, cam_msg):
