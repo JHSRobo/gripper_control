@@ -4,7 +4,7 @@
   <name>gripper_control</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="randallj24@student.jhs.net">James</maintainer>
+  <maintainer email="fringsj26@student.jhs.net">Jack Frings</maintainer>
   <license>MIT</license>
 
   <test_depend>ament_copyright</test_depend>
