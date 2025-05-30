@@ -22,7 +22,7 @@ class GripperController(Node):
             self.log = self.get_logger() # Quick reference for logging
 
             self.active_gripper = None
-            self.cached_input = False
+            self.cached_input = [False, False]
 
             self.gripper = { "Front": None, "Bottom": None }
 
@@ -50,9 +50,13 @@ class GripperController(Node):
 
     def joy_callback(self, joy_msg):
         # Enable or disable active gripper based on button press
-        if joy_msg.buttons[0] and not self.cached_input:
+        if joy_msg.buttons[0] and not self.cached_input[0]:
             self.toggle_gripper()
-        self.cached_input = joy_msg.buttons[0]
+        if joy_msg.buttons[9] and not self.cached_input[1]:
+            self.toggle_secondary_gripper()
+
+        self.cached_input[0] = joy_msg.buttons[0]
+        self.cached_input[1] = joy_msg.buttons[8]
 
 
     def toggle_gripper(self):
@@ -63,6 +67,20 @@ class GripperController(Node):
         # Get active gripper
         gripper = self.gripper[self.active_gripper]
 
+        if gripper.getDutyCycle():
+            gripper.setDutyCycle(0)
+            self.log.info("{} gripper opened".format(self.active_gripper))
+        elif not gripper.getDutyCycle():
+            gripper.setDutyCycle(1)
+            self.log.info("{} gripper closed".format(self.active_gripper))
+        else:
+            self.log.info(str(gripper.getDutyCycle()))
+
+    def toggle_secondary_gripper(self):
+        if self.active_gripper == "Front":
+            gripper = self.gripper["Bottom"]
+        else:
+            gripper = self.gripper["Front"]
         if gripper.getDutyCycle():
             gripper.setDutyCycle(0)
             self.log.info("{} gripper opened".format(self.active_gripper))
