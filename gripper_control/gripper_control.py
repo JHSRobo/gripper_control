@@ -22,7 +22,7 @@ class GripperController(Node):
             self.log = self.get_logger() # Quick reference for logging
 
             self.active_gripper = None
-            self.cached_input = [False, False]
+            self.cached_input = False
 
             self.gripper = { "Front": None, "Bottom": None }
 
@@ -50,14 +50,13 @@ class GripperController(Node):
 
     def joy_callback(self, joy_msg):
         # Enable or disable active gripper based on button press
-        if joy_msg.buttons[0] and not self.cached_input[0]:
-            self.toggle_gripper()
-        if joy_msg.buttons[9] and not self.cached_input[1]:
-            self.toggle_secondary_gripper()
+        if joy_msg.buttons[0] and not self.cached_input:
+            if not joy_msg.buttons[8]:
+                self.toggle_gripper()
+            else:
+                self.toggle_secondary_gripper()
 
-        self.cached_input[0] = joy_msg.buttons[0]
-        self.cached_input[1] = joy_msg.buttons[8]
-
+        self.cached_input = joy_msg.buttons[0]
 
     def toggle_gripper(self):
         if self.active_gripper is None:
